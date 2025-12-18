@@ -1,6 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import { typeDefs } from "@/app/graphql/schema";
+import { typeDefs } from "@/app/graphql/schemas";
 import { resolvers } from "@/app/graphql/resolvers";
 import { getServerSession } from "next-auth/next"; // ✅ correct import for App Router
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

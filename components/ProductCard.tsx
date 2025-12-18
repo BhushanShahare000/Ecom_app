@@ -28,12 +28,13 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [addToCart] = useMutation(ADD_TO_CART, { client });
-  const { count, setCount } = useCart();
+  const { count, setCount, refetch } = useCart();
 
   const handleAddToCart = async () => {
     try {
       await addToCart({ variables: { productId: product.id, quantity: 1 } });
       setCount(count + 1);
+      refetch();
       alert(`${product.name} added to cart!`);
     } catch (err: any) {
       alert(err.message);
