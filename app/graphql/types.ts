@@ -27,3 +27,11 @@ export interface CartItem {
 export interface GetCartData {
     cart: CartItem[];
 }
+
+export interface CheckoutData {
+    checkout: {
+        id: string;
+        total: number;
+        status: string;
+    };
+}

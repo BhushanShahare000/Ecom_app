@@ -7,7 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { client } from "@/app/lib/apollo";
-import { GetCartData, CartItem } from "@/app/graphql/types";
+import { GetCartData, CartItem, CheckoutData } from "@/app/graphql/types";
+
+
+const CHECKOUT = gql`
+  mutation {
+    checkout {
+      id
+      total
+      status
+    }
+  }
+`;
 
 
 const GET_CART = gql`
@@ -32,9 +43,21 @@ const REMOVE_FROM_CART = gql`
 `;
 
 export default function CartPage() {
-    const { data, loading, error, refetch } = useQuery<GetCartData>(GET_CART, { client });
+    const { data, loading, error, refetch } = useQuery<GetCartData, {}>(GET_CART, { client });
     const [removeFromCart] = useMutation(REMOVE_FROM_CART, { client });
+    const [checkout] = useMutation<CheckoutData>(CHECKOUT, { client });
 
+    const handleCheckout = async () => {
+        try {
+            const { data } = await checkout();
+            if (data?.checkout) {
+                alert(`Order #${data.checkout.id} placed successfully!`);
+                refetch();
+            }
+        } catch (err: any) {
+            alert(err.message);
+        }
+    };
     if (loading)
         return (
             <div className="flex justify-center items-center h-screen text-gray-500">
@@ -131,8 +154,9 @@ export default function CartPage() {
 
                     <div className="flex justify-end mt-4">
                         <Button
+                            onClick={handleCheckout}
                             size="lg"
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+                            className="bg-green-600 hover:bg-green-700 text-white px-6"
                         >
                             Proceed to Checkout
                         </Button>

@@ -77,6 +77,7 @@ model OrderItem {
   productId String
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
+  price     Float
 }
 
 enum OrderStatus {
