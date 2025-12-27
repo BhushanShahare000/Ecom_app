@@ -23,6 +23,7 @@ export const productTypeDefs = gql`
   }
 
   type Mutation {
+    deleteProduct(id: ID!): Boolean
     createProduct(
       name: String
       description: String!
@@ -31,5 +32,13 @@ export const productTypeDefs = gql`
       categoryId: ID!
     ): Product!
     createCategory(name: String!): Category!
+    updateProduct(
+      id: ID!
+      name: String
+      description: String
+      price: Float
+      image: String
+      categoryId: ID
+    ): Product!
   }
 `;

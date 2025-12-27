@@ -31,6 +31,14 @@ const CREATE_PRODUCT = gql`
   }
 `;
 
+const DELETE_PRODUCT = gql`
+  mutation DeleteProduct($id: ID!) {
+    deleteProduct(id: $id) {
+      id
+    }
+  }
+`;
+
 const GET_CATEGORIES = gql`
   query {
     categories {

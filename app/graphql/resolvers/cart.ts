@@ -12,7 +12,7 @@ export const cartResolvers = {
                         userId: session.user.id
                     }
                 },
-                include: { product: true },
+                include: { product: { include: { category: true } } },
             });
         },
     },
@@ -45,7 +45,7 @@ export const cartResolvers = {
                 return prisma.cartItem.update({
                     where: { id: existing.id },
                     data: { quantity: existing.quantity + quantity },
-                    include: { product: true },
+                    include: { product: { include: { category: true } } },
                 });
             }
 
@@ -55,7 +55,7 @@ export const cartResolvers = {
                     productId,
                     quantity,
                 },
-                include: { product: true },
+                include: { product: { include: { category: true } } },
             });
         },
 
@@ -91,7 +91,7 @@ export const cartResolvers = {
             return prisma.cartItem.update({
                 where: { id: item.id },
                 data: { quantity },
-                include: { product: true },
+                include: { product: { include: { category: true } } },
             });
         },
     },

@@ -9,7 +9,7 @@ export const orderResolver = {
             return prisma.order.findMany({
                 where: { userId: session.user.id },
                 include: {
-                    items: { include: { product: true } },
+                    items: { include: { product: { include: { category: true } } } },
                 },
                 orderBy: { createdAt: "desc" },
             });
@@ -22,7 +22,7 @@ export const orderResolver = {
 
             const cartItems = await prisma.cartItem.findMany({
                 where: { cart: { userId: session.user.id } },
-                include: { product: true },
+                include: { product: { include: { category: true } } },
             });
 
             if (cartItems.length === 0) {
@@ -45,7 +45,7 @@ export const orderResolver = {
                         })),
                     },
                 },
-                include: { items: { include: { product: true } } },
+                include: { items: { include: { product: { include: { category: true } } } } },
             });
 
             // Clear cart

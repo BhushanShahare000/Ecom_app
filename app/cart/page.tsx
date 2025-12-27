@@ -49,15 +49,18 @@ export default function CartPage() {
 
     const handleCheckout = async () => {
         try {
-            const { data } = await checkout();
-            if (data?.checkout) {
-                alert(`Order #${data.checkout.id} placed successfully!`);
-                refetch();
+            const res = await fetch("/api/checkout", { method: "POST" });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url; // redirect to Stripe
+            } else {
+                alert(data.error || "Unable to checkout");
             }
         } catch (err: any) {
             alert(err.message);
         }
     };
+
     if (loading)
         return (
             <div className="flex justify-center items-center h-screen text-gray-500">

@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
@@ -13,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Mail, Shield } from "lucide-react";
+import { User, LogOut, Mail, Shield, Package } from "lucide-react";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/app/context/Cartcontext";
 import Link from "next/link";
@@ -81,6 +82,13 @@ export default function Header() {
                                 <User className="w-4 h-4 text-blue-500" />
                                 <span className="font-medium">{user?.name}</span>
                             </div>
+                            <div className="flex items-center gap-2 hover:text-blue-600 transition">
+                                <Package className="w-4 h-4 text-blue-500" />
+                                <Link href="/orders" className="font-medium text-gray-700 hover:text-blue-600">
+                                    Orders
+                                </Link>
+                            </div>
+
                             <div className="flex items-center gap-2">
                                 <Mail className="w-4 h-4 text-blue-500" />
                                 <span>{user?.email}</span>
