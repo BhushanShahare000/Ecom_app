@@ -35,3 +35,26 @@ export interface CheckoutData {
         status: string;
     };
 }
+
+export interface OrderItem {
+    id: string;
+    quantity: number;
+    price: number;
+    product: {
+        id: string;
+        name: string;
+        image: string;
+    };
+}
+
+export interface Order {
+    id: string;
+    total: number;
+    status: string;
+    createdAt: string;
+    items: OrderItem[];
+}
+
+export interface GetOrdersData {
+    orders: Order[];
+}

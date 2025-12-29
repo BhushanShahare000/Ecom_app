@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client/react";
 import { client } from "@/app/lib/apollo";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { GetOrdersData, Order } from "@/app/graphql/types";
 
 const GET_ORDERS = gql`
   query {
@@ -28,7 +29,7 @@ const GET_ORDERS = gql`
 `;
 
 export default function OrdersPage() {
-    const { data, loading, error } = useQuery(GET_ORDERS, { client });
+    const { data, loading, error } = useQuery<GetOrdersData>(GET_ORDERS, { client });
 
     if (loading) return <p className="text-center mt-10">Loading orders...</p>;
     if (error) return <p className="text-center text-red-500">{error.message}</p>;
@@ -45,7 +46,7 @@ export default function OrdersPage() {
                 <p className="text-gray-500 text-center">No orders yet.</p>
             ) : (
                 <div className="space-y-4">
-                    {orders.map((order: any) => (
+                    {orders.map((order: Order) => (
                         <Card key={order.id} className="shadow-sm border rounded-xl">
                             <CardContent className="p-4 space-y-2">
                                 <div className="flex justify-between items-center">
@@ -57,7 +58,7 @@ export default function OrdersPage() {
                                     </span>
                                 </div>
                                 <div className="space-y-2">
-                                    {order.items.map((item: any) => (
+                                    {order.items.map((item) => (
                                         <div
                                             key={item.id}
                                             className="flex items-center gap-3 border-b pb-2"
