@@ -4,10 +4,6 @@ import { prisma } from "@/app/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2025-12-15.clover",
-});
-
 export async function POST() {
     try {
         const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -21,6 +17,10 @@ export async function POST() {
             console.error("Missing NEXT_PUBLIC_APP_URL");
             return NextResponse.json({ error: "Internal Server Error: Missing App URL" }, { status: 500 });
         }
+
+        const stripe = new Stripe(stripeSecretKey, {
+            apiVersion: "2025-12-15.clover",
+        });
 
         const session = await getServerSession(authOptions);
         if (!session?.user) {
