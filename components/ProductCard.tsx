@@ -21,12 +21,14 @@ const ADD_TO_CART = gql`
 import { Product } from "@/app/graphql/queries/product";
 import Image from "next/image";
 import { Card, CardContent } from "./ui/card";
+import { useState } from "react";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [isAdded, setIsAdded] = useState(false);
   const [addToCart] = useMutation(ADD_TO_CART, { client });
   const { count, setCount, refetch } = useCart();
 

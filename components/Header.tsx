@@ -19,6 +19,8 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/app/context/Cartcontext";
 import Link from "next/link";
 
+import Image from "next/image";
+
 export default function Header() {
     const { count } = useCart();
     const { data: session, status } = useSession();
@@ -42,8 +44,8 @@ export default function Header() {
         <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-sm border-b border-gray-100">
             {/* Logo */}
             <div className="flex items-center gap-2">
-                <img src="/logo.svg" alt="Logo" className="w-8 h-8" />
-                <span className="text-2xl font-semibold text-blue-600">MyApp</span>
+                <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-8 h-8" />
+                <span className="text-2xl font-semibold text-blue-600">Ecom</span>
             </div>
 
             <div className="flex items-center gap-2">
