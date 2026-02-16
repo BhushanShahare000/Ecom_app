@@ -52,6 +52,10 @@ export interface Order {
     total: number;
     status: string;
     createdAt: string;
+    user: {
+        name: string;
+        email: string;
+    };
     items: OrderItem[];
 }
 

@@ -20,10 +20,12 @@ items: [OrderItem!]!
 }
 
 extend type Query {
-orders:[Order!]!
+  orders:[Order!]!
+  allOrders:[Order!]!
 }
 
 extend type Mutation {
-checkout:Order!
+  checkout:Order!
+  deleteOrder(id: ID!): Boolean!
 }
 `

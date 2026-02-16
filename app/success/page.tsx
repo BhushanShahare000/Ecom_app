@@ -14,11 +14,11 @@ export default function SuccessPage() {
     }, [router]);
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen text-center">
-            <h1 className="text-3xl font-semibold text-green-600 mb-2">
+        <div className="flex flex-col items-center justify-center h-screen text-center bg-white dark:bg-gray-950 transition-colors">
+            <h1 className="text-3xl font-semibold text-green-600 dark:text-green-400 mb-2 transition-colors">
                 ✅ Payment Successful!
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400 transition-colors">
                 Thank you for your purchase. Redirecting to your orders...
             </p>
         </div>

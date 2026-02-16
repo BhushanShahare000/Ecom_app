@@ -2,14 +2,15 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 async function main() {
-    const users = await prisma.user.findMany({
-        select: {
-            id: true,
-            email: true,
-            role: true
+    const products = await prisma.product.findMany({
+        where: {
+            name: {
+                contains: 'pink',
+                mode: 'insensitive'
+            }
         }
     })
-    console.log(JSON.stringify(users, null, 2))
+    console.log(JSON.stringify(products, null, 2))
 }
 
 main()

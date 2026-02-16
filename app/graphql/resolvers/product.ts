@@ -1,4 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
+import { GraphQLError } from "graphql";
 
 export const productResolver = {
     Query: {
@@ -27,10 +28,11 @@ export const productResolver = {
                 return true;
             } catch (error: any) {
                 console.error("Error deleting product:", error);
+                // Prisma error code for foreign key constraint violation
                 if (error.code === 'P2003') {
-                    throw new Error("Cannot delete product because it is part of an existing order.");
+                    throw new GraphQLError("Cannot delete product: It is linked to existing orders. Delete those orders first if you wish to remove this product.");
                 }
-                throw new Error("Failed to delete product");
+                throw new GraphQLError("Failed to delete product. Please try again.");
             }
         },
 
