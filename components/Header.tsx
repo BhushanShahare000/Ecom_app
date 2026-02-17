@@ -66,13 +66,13 @@ export default function Header() {
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-100 transition-all duration-300 ${showSolidHeader ? "bg-white/80 dark:bg-gray-950/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800 py-3" : "bg-transparent py-5"}`}>
-            <nav className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+            <nav className="max-w-7xl mx-auto px-4 md:px-12 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group relative z-110">
                     <div className="bg-blue-600 p-1.5 rounded-xl group-hover:rotate-12 transition-transform duration-300">
-                        <ShoppingCart className="w-5 h-5 text-white" />
+                        <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-white" />
                     </div>
-                    <span className="text-2xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+                    <span className="text-xl md:text-2xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
                         Ecom
                     </span>
                 </Link>
@@ -87,7 +87,7 @@ export default function Header() {
                 </div>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-2 md:gap-6">
+                <div className="flex items-center gap-1 md:gap-6">
                     {/* Search Bar (Desktop) */}
                     <div className="hidden lg:flex items-center bg-gray-100/80 dark:bg-gray-800/80 rounded-full px-4 py-2 w-64 border border-transparent focus-within:border-blue-300 dark:focus-within:border-blue-700 focus-within:bg-white dark:focus-within:bg-gray-900 transition-all">
                         <Search className="w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -98,10 +98,10 @@ export default function Header() {
                         />
                     </div>
 
-                    {/* Theme Toggle */}
+                    {/* Theme Toggle (Desktop Only) */}
                     <button
                         onClick={toggleTheme}
-                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-110 active:scale-95 bg-gray-100 dark:bg-gray-800 rounded-full"
+                        className="hidden md:flex p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-110 active:scale-95 bg-gray-100 dark:bg-gray-800 rounded-full"
                         aria-label="Toggle Theme"
                     >
                         {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -109,9 +109,9 @@ export default function Header() {
 
                     {/* Cart */}
                     <Link href="/cart" className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-110 active:scale-95">
-                        <ShoppingCart className="w-6 h-6" />
+                        <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
                         {count > 0 && (
-                            <span className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white dark:border-gray-900">
+                            <span className="absolute top-0 right-0 bg-blue-600 text-white text-[9px] md:text-[10px] font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center border-2 border-white dark:border-gray-900">
                                 {count}
                             </span>
                         )}
@@ -119,7 +119,7 @@ export default function Header() {
 
                     {/* Profile Dropdown / Auth Actions */}
                     {status === "loading" ? (
-                        <div className="h-10 w-10 md:w-32 bg-gray-100 dark:bg-gray-800 rounded-full animate-pulse" />
+                        <div className="hidden md:block h-10 w-10 md:w-32 bg-gray-100 dark:bg-gray-800 rounded-full animate-pulse" />
                     ) : status === "authenticated" ? (
                         <div className="hidden md:block">
                             <DropdownMenu>
@@ -202,105 +202,141 @@ export default function Header() {
             </nav>
 
             {/* Mobile Menu Overlay */}
-            <div className={`fixed inset-0 bg-white dark:bg-gray-950 z-100 transition-all duration-500 md:hidden ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}>
-                <div className="flex flex-col h-full pt-28 px-8 pb-12 overflow-y-auto">
-                    {/* Search (Mobile) */}
-                    <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-2xl px-5 py-4 mb-10 group focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 transition-all">
-                        <Search className="w-5 h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600" />
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            className="bg-transparent border-none outline-none text-base ml-3 w-full text-gray-900 dark:text-gray-100 placeholder-gray-400"
-                        />
-                    </div>
 
-                    {/* Nav Links */}
-                    <div className="flex flex-col gap-6 mb-12">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Navigation</p>
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="text-3xl font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            <div
+                className={`fixed inset-0 z-105 md:hidden transition-all duration-500 ${isMenuOpen
+                    ? "pointer-events-auto opacity-100"
+                    : "pointer-events-none opacity-0"
+                    }`}
+            >
+
+                <div
+                    className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"
+                        }`}
+                    onClick={() => setIsMenuOpen(false)}
+                ></div>
+
+
+                <div
+                    className={`absolute right-0 top-0 h-dvh w-4/5 max-w-sm bg-white dark:bg-gray-950 shadow-2xl transform transition-transform duration-500 ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+                        }`}
+                >
+                    <div className="flex flex-col h-full pt-16 px-4 pb-8 overflow-y-auto overscroll-contain">
+
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="flex-1 flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2.5 group focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 transition-all">
+                                <Search className="w-5 h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600" />
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    className="bg-transparent border-none outline-none text-sm ml-2 w-full text-gray-900 dark:text-gray-100 placeholder-gray-400"
+                                />
+                            </div>
+                            <button
+                                onClick={toggleTheme}
+                                className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-400 active:scale-95 transition-all"
                             >
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
+                                {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                            </button>
+                        </div>
 
-                    <div className="mt-auto space-y-8">
-                        {status === "loading" ? (
-                            <div className="w-full h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl animate-pulse" />
-                        ) : status === "authenticated" ? (
-                            <div className="grid gap-4">
+
+                        <div className="flex flex-col gap-3 mb-8">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-1">
+                                Navigation
+                            </p>
+                            {navLinks.map((link) => (
                                 <Link
-                                    href="/profile"
+                                    key={link.name}
+                                    href={link.href}
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800"
+                                    className="text-xl font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-1"
                                 >
-                                    <Avatar className="h-12 w-12">
-                                        <AvatarImage src={user?.image || ""} />
-                                        <AvatarFallback className="bg-blue-600 text-white font-bold">{user?.name?.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="font-bold text-gray-900 dark:text-gray-100">{user?.name}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">View Account Settings</p>
-                                    </div>
+                                    {link.name}
                                 </Link>
+                            ))}
+                        </div>
 
-                                <div className="grid grid-cols-2 gap-3">
+
+                        <div className="mt-auto space-y-6">
+                            {status === "loading" ? (
+                                <div className="w-full h-14 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse" />
+                            ) : status === "authenticated" ? (
+                                <div className="grid gap-3">
                                     <Link
-                                        href="/orders"
+                                        href="/profile"
                                         onClick={() => setIsMenuOpen(false)}
-                                        className="flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors"
+                                        className="flex items-center gap-4 p-3.5 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 active:bg-blue-50 dark:active:bg-blue-900/20 transition-all"
                                     >
-                                        <Package className="w-6 h-6 mb-2" />
-                                        <span className="text-xs font-bold">Orders</span>
+                                        <Avatar className="h-10 w-10">
+                                            <AvatarImage src={user?.image || ""} />
+                                            <AvatarFallback className="bg-blue-600 text-white font-bold">
+                                                {user?.name?.charAt(0)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">{user?.name}</p>
+                                            <p className="text-[10px] text-gray-500 dark:text-gray-400">Account Settings</p>
+                                        </div>
                                     </Link>
-                                    {user?.role === "ADMIN" && (
+
+                                    <div className="grid grid-cols-2 gap-3">
                                         <Link
-                                            href="/admin"
+                                            href="/orders"
                                             onClick={() => setIsMenuOpen(false)}
-                                            className="flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors"
+                                            className="flex flex-col items-center justify-center p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 text-gray-700 dark:text-gray-300 active:text-blue-600 transition-all"
                                         >
-                                            <Shield className="w-6 h-6 mb-2" />
-                                            <span className="text-xs font-bold">Admin</span>
+                                            <Package className="w-5 h-5 mb-1" />
+                                            <span className="text-[10px] font-bold">Orders</span>
                                         </Link>
-                                    )}
-                                </div>
 
-                                <button
-                                    onClick={() => signOut({ callbackUrl: "/login" })}
-                                    className="w-full flex items-center justify-center gap-2 py-5 text-red-600 dark:text-red-400 font-bold border-2 border-red-50 dark:border-red-900/20 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-all"
-                                >
-                                    <LogOut className="w-5 h-5" /> Logout
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col gap-4">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-1">Get Started</p>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Link
-                                        href="/login"
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center justify-center py-5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-gray-100 font-bold rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                                        {user?.role === "ADMIN" && (
+                                            <Link
+                                                href="/admin"
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="flex flex-col items-center justify-center p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 text-gray-700 dark:text-gray-300 active:text-blue-600 transition-all"
+                                            >
+                                                <Shield className="w-5 h-5 mb-1" />
+                                                <span className="text-[10px] font-bold">Admin</span>
+                                            </Link>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        onClick={() => signOut({ callbackUrl: "/login" })}
+                                        className="w-full flex items-center justify-center gap-2 py-3 text-red-600 dark:text-red-400 font-semibold border-2 border-red-50 dark:border-red-900/20 rounded-xl active:bg-red-50 dark:active:bg-red-900/10 transition-all text-sm"
                                     >
-                                        Log In
-                                    </Link>
-                                    <Link
-                                        href="/register"
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center justify-center py-5 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 dark:shadow-none hover:bg-blue-700 transition-all"
-                                    >
-                                        Join Now
-                                    </Link>
+                                        <LogOut className="w-4 h-4" /> Logout
+                                    </button>
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                <div className="flex flex-col gap-4">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-1">
+                                        Get Started
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <Link
+                                            href="/login"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="flex items-center justify-center py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-gray-100 font-semibold rounded-xl active:bg-gray-100 transition-all text-sm"
+                                        >
+                                            Log In
+                                        </Link>
+                                        <Link
+                                            href="/register"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="flex items-center justify-center py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-blue-200 dark:shadow-none active:bg-blue-700 transition-all text-sm"
+                                        >
+                                            Join Now
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+
         </header>
     );
 }
