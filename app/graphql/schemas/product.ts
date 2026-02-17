@@ -20,6 +20,7 @@ export const productTypeDefs = gql`
     products: [Product!]!
     product(id: ID!): Product
     categories: [Category!]!
+    category(id: ID!): Category
   }
 
   type Mutation {

@@ -9,12 +9,35 @@ export const GET_CATEGORIES = gql`
   }
 `;
 
+export const GET_CATEGORY_WITH_PRODUCTS = gql`
+  query GetCategory($id: ID!) {
+    category(id: $id) {
+      id
+      name
+      products {
+        id
+        name
+        description
+        price
+        image
+        category {
+          name
+        }
+      }
+    }
+  }
+`;
 
 export interface Category {
-    id: string;
-    name: string;
+  id: string;
+  name: string;
+  products?: any[];
 }
 
 export interface GetCategoriesData {
-    categories: Category[];
+  categories: Category[];
+}
+
+export interface GetCategoryData {
+  category: Category;
 }
