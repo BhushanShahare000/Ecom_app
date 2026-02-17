@@ -36,6 +36,30 @@ export async function POST() {
         if (cartItems.length === 0)
             return NextResponse.json({ error: "Cart empty" }, { status: 400 });
 
+        const total = cartItems.reduce(
+            (acc, item) => acc + item.product.price * item.quantity, 0);
+
+        // 1. Create Order in Database (PENDING status)
+        const order = await prisma.order.create({
+            data: {
+                userId: user.id,
+                total,
+                status: "PENDING", // Initial status
+                items: {
+                    create: cartItems.map((item) => ({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        price: item.product.price,
+                    })),
+                },
+            },
+        });
+
+        // 2. Clear User's Cart
+        await prisma.cartItem.deleteMany({
+            where: { cart: { userId: user.id } },
+        });
+
         // Create Stripe line items
         const line_items = cartItems.map((item) => ({
             price_data: {
@@ -56,6 +80,10 @@ export async function POST() {
             mode: "payment",
             success_url: `${appUrl}/success`,
             cancel_url: `${appUrl}/cart`,
+            metadata: {
+                orderId: order.id,
+                userId: user.id,
+            },
         });
 
         return NextResponse.json({ url: checkoutSession.url });
