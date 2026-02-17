@@ -8,6 +8,8 @@ import { client } from "@/app/lib/apollo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Tag, Layers, CheckCircle2, AlertCircle } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const GET_CATEGORIES = gql`
   query GetCategories {
@@ -37,11 +39,25 @@ interface GetCategoriesData {
 }
 
 export default function AddCategoryPage() {
+  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      router.push("/login");
+    } else if (sessionStatus === "authenticated" && (session?.user as any)?.role !== "ADMIN") {
+      router.push("/");
+    }
+  }, [sessionStatus, session, router]);
+
   const [name, setName] = useState("");
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
   const { data: catData, loading: catLoading, refetch } = useQuery<GetCategoriesData>(GET_CATEGORIES, { client });
+
+  if (sessionStatus === "loading" || (sessionStatus === "authenticated" && (session?.user as any)?.role !== "ADMIN")) {
+    return <div className="min-h-screen flex items-center justify-center">Verifying Authorisation...</div>;
+  }
 
   const [createCategory, { loading }] = useMutation(CREATE_CATEGORY, {
     client,

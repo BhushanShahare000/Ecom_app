@@ -7,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Package, Calendar, User, Clock, ShoppingBag } from "lucide-react";
 import { Order } from "@/app/graphql/types";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const ALL_ORDERS = gql`
   query {
@@ -38,8 +41,23 @@ const DELETE_ORDER = gql`
 `;
 
 export default function AdminOrdersPage() {
+    const { data: session, status: sessionStatus } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (sessionStatus === "unauthenticated") {
+            router.push("/login");
+        } else if (sessionStatus === "authenticated" && (session?.user as any)?.role !== "ADMIN") {
+            router.push("/");
+        }
+    }, [sessionStatus, session, router]);
+
     const { data, loading, error, refetch } = useQuery<{ allOrders: Order[] }>(ALL_ORDERS, { client });
     const [deleteOrder] = useMutation<{ deleteOrder: boolean }>(DELETE_ORDER, { client });
+
+    if (sessionStatus === "loading" || (sessionStatus === "authenticated" && (session?.user as any)?.role !== "ADMIN")) {
+        return <div className="min-h-screen flex items-center justify-center">Verifying Authorisation...</div>;
+    }
 
     const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this order? This will remove all associated records.")) return;

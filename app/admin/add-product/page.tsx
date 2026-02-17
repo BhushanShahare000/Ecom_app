@@ -8,6 +8,8 @@ import { client } from "@/app/lib/apollo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, ArrowRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const CREATE_PRODUCT = gql`
   mutation CreateProduct(
@@ -59,7 +61,17 @@ interface GetCategoriesData {
 }
 
 export default function AddProductPage() {
+    const { data: session, status: sessionStatus } = useSession();
     const router = useRouter();
+
+    useEffect(() => {
+        if (sessionStatus === "unauthenticated") {
+            router.push("/login");
+        } else if (sessionStatus === "authenticated" && (session?.user as any)?.role !== "ADMIN") {
+            router.push("/");
+        }
+    }, [sessionStatus, session, router]);
+
     const { data: catData, loading: catLoading } = useQuery<GetCategoriesData>(GET_CATEGORIES, { client });
     const [form, setForm] = useState({
         name: "",
@@ -68,6 +80,10 @@ export default function AddProductPage() {
         image: "",
         categoryId: "",
     });
+
+    if (sessionStatus === "loading" || (sessionStatus === "authenticated" && (session?.user as any)?.role !== "ADMIN")) {
+        return <div className="min-h-screen flex items-center justify-center">Verifying Authorisation...</div>;
+    }
 
     const [createProduct, { loading }] = useMutation(CREATE_PRODUCT, {
         client,

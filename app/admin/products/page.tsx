@@ -6,6 +6,9 @@ import { client } from "@/app/lib/apollo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 
 interface Product {
@@ -37,8 +40,23 @@ const DELETE_PRODUCT = gql`
 `;
 
 export default function AdminProductsPage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/login");
+        } else if (status === "authenticated" && (session?.user as any)?.role !== "ADMIN") {
+            router.push("/");
+        }
+    }, [status, session, router]);
+
     const { data, loading, error, refetch } = useQuery<GetProductsData>(GET_PRODUCTS, { client });
     const [deleteProduct] = useMutation<{ deleteProduct: boolean }>(DELETE_PRODUCT, { client });
+
+    if (status === "loading" || (status === "authenticated" && (session?.user as any)?.role !== "ADMIN")) {
+        return <div className="min-h-screen flex items-center justify-center">Verifying Authorisation...</div>;
+    }
 
     const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) return;

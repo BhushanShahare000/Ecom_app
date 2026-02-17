@@ -15,10 +15,13 @@ export const productResolver = {
 
     Mutation: {
         // ✅ Create Product
-        createProduct: (_: any, args: any) =>
-            prisma.product.create({ data: args, include: { category: true } }),
+        createProduct: (_: any, args: any, { session }: any) => {
+            if (session?.user?.role !== "ADMIN") throw new GraphQLError("Not authorized");
+            return prisma.product.create({ data: args, include: { category: true } });
+        },
 
-        deleteProduct: async (_: any, { id }: { id: string }) => {
+        deleteProduct: async (_: any, { id }: { id: string }, { session }: any) => {
+            if (session?.user?.role !== "ADMIN") throw new GraphQLError("Not authorized");
             try {
                 // Delete related cart items first
                 await prisma.cartItem.deleteMany({ where: { productId: id } });
@@ -37,11 +40,13 @@ export const productResolver = {
         },
 
         // ✅ Optional: Update Product (simple)
-        updateProduct: (_: any, { id, ...data }: any) =>
-            prisma.product.update({
+        updateProduct: (_: any, { id, ...data }: any, { session }: any) => {
+            if (session?.user?.role !== "ADMIN") throw new GraphQLError("Not authorized");
+            return prisma.product.update({
                 where: { id },
                 data,
                 include: { category: true },
-            }),
+            });
+        },
     },
 };

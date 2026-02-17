@@ -87,6 +87,7 @@ export const cartResolvers = {
             });
 
             if (!item) throw new GraphQLError("Item not in cart");
+            if (quantity <= 0) throw new GraphQLError("Quantity must be greater than 0");
 
             return prisma.cartItem.update({
                 where: { id: item.id },
